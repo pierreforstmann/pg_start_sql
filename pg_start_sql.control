@@ -1,0 +1,5 @@
+# pg_start_sql extension
+comment = 'pg_start_sql extension'
+default_version = '1.0'
+module_pathname = '$libdir/pg_start_sql'
+relocatable = true
