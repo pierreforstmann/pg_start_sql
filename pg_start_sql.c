@@ -29,6 +29,7 @@
 #include "utils/builtins.h"
 #include "utils/snapmgr.h"
 #include "tcop/utility.h"
+#include "miscadmin.h"
 
 PG_MODULE_MAGIC;
 
@@ -102,7 +103,7 @@ pg_start_sql_main(PG_FUNCTION_ARGS)
 #else
 	BackgroundWorkerInitializeConnection(pg_start_sql_dbname, NULL);
 #endif
-	elog(LOG, "pg_start_sql: %s initialized in database %s", MyBgworkerEntry->bgw_name, pg_start_sql_dbname);
+	elog(LOG, "pg_start_sql: %s initialized in database %s with user id %d", MyBgworkerEntry->bgw_name, pg_start_sql_dbname, GetUserId());
 
 	/*
   	 * no main loop: run SQL statements and exit
@@ -140,9 +141,7 @@ pg_start_sql_main(PG_FUNCTION_ARGS)
 		appendStringInfoString(&buf_select, pg_start_sql_stmt);
 		elog(LOG, "pg_start_sql: running %s", buf_select.data);	
 		ret = SPI_execute(buf_select.data, false, 0);
-
-		if (ret != SPI_OK_SELECT)
-			elog(ERROR, "pg_start_sql: %s failed: error code %d", buf_select.data, ret);
+		elog(LOG, "pg_start_sql: return code: %s", SPI_result_code_string(ret));
 	}
 	
 	/* 
@@ -162,9 +161,8 @@ pg_start_sql_main(PG_FUNCTION_ARGS)
 			pgstat_report_activity(STATE_RUNNING, buf_select.data);
 			elog(LOG, "pg_start_sql: running %s", buf_select.data);	
 			ret = SPI_execute(buf_select.data, false, 0);
+			elog(LOG, "pg_start_sql: return code: %s", SPI_result_code_string(ret));
 
-			if (ret != SPI_OK_SELECT)
-				elog(ERROR, "pg_start_sql: %s failed: error code %d", buf_select.data, ret);
 		}
 		FreeFile(fp);
 	}
