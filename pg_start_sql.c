@@ -30,6 +30,7 @@
 #include "utils/snapmgr.h"
 #include "tcop/utility.h"
 #include "miscadmin.h"
+#include "storage/fd.h"
 
 PG_MODULE_MAGIC;
 
@@ -176,7 +177,7 @@ pg_start_sql_main(PG_FUNCTION_ARGS)
 	pgstat_report_stat(false);
 	pgstat_report_activity(STATE_IDLE, NULL);
 
-	elog(LOG, "pg_start_sql: exiting");
+ 	elog(LOG, "pg_start_sql: %s exit", MyBgworkerEntry->bgw_name);	
 
 	proc_exit(0);
 }
@@ -230,7 +231,10 @@ _PG_init(void)
 				NULL);
 
 	if (pg_start_sql_stmt == NULL && pg_start_sql_file == NULL)		
-		elog(FATAL, "pg_start_sql.stmt and pg_start_sql.file_name are not set");
+	{
+		elog(WARNING, "Neither pg_start_sql.stmt nor pg_start_sql.file_name are set: pg_start_sql cannot be activated");
+		return;
+	}
 
 
 	/* set up common data for all our workers */
