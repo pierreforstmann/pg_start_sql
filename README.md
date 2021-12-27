@@ -23,7 +23,7 @@ And following SQL statement should be run: <br>
 
 This extension is installed at instance level: it does not need to be installed in each database. <br>
 
-`pg_start_sql`  has been successfully tested with PostgreSQL 9.5, 9.6, 10, 11, 12 and 13. <br>
+`pg_start_sql`  has been successfully tested with PostgreSQL 9.5, 9.6, 10, 11, 12, 13 and 14. <br>
 
 ## Usage
 pg_start_sql has 3 GUC parameters:
