@@ -1,8 +1,7 @@
 # pg_start_sql Makefile
-
 MODULES = pg_start_sql
-
 EXTENSION = pg_start_sql
+DATA = pg_start_sql--1.0.0.sql    
 
 PG_CONFIG = pg_config
 PGXS := $(shell $(PG_CONFIG) --pgxs)
